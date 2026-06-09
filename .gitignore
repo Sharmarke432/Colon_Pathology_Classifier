@@ -1,2 +1,49 @@
-/.venv
-/Dockerfile
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Byte-compiled / cache
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Local config
+.env
+.env.*
+
+# Artifacts and data
+artifacts/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Docker
+*.pid
