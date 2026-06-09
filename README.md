@@ -60,7 +60,3 @@ curl -X POST "http://127.0.0.1:8000/predict" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@sample_patch.png"
 ```
-
-## Important
-
-The current scaffold uses a fallback `resnet18` so the app can boot. Replace the model-building logic in `app/models/loader.py` with the exact architecture you trained in Colab, otherwise your checkpoint may not load correctly.
