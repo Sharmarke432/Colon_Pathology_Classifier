@@ -1,0 +1,51 @@
+# ---------------
+# Development files (not needed in production)
+# ---------------
+requirements-dev.txt
+tests/
+.git/
+.gitignore
+README.md
+Makefile
+.pytest_cache/
+htmlcov/
+.coverage
+.mypy_cache/
+.black_cache/
+
+# ---------------
+# Local environment files (security)
+# ---------------
+.env
+.env.local
+*.env
+
+# ---------------
+# Large data & models (copy separately or download in Docker)
+# ---------------
+data/
+models/
+*.pth
+*.pt
+*.h5
+
+# ---------------
+# IDE & editor files
+# ---------------
+.vscode/
+*.swp
+*.swo
+*~
+
+# ---------------
+# Python cache
+# ---------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ---------------
+# Jupyter notebooks (optional, if you don't need them in container)
+# ---------------
+*.ipynb

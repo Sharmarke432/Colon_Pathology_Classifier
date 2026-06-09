@@ -1,0 +1,13 @@
+-r requirements.txt
+
+# Code Quality
+black>=24.0.0
+flake8>=7.0.0
+mypy>=1.8.0
+
+# Test Coverage
+pytest-cov>=4.1.0
+pre-commit>=3.6.0
+
+# Optional: Jupyter for debugging (if you want to inspect model)
+jupyter>=1.0.0

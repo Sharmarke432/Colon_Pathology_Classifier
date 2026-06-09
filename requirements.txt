@@ -1,9 +1,21 @@
-fastapi
-uvicorn[standard]
-python-multipart
-pillow
-torch
-torchvision
-pydantic
-pytest
-httpx
+# API & Server
+fastapi>=0.109.0
+uvicorn>=0.27.0
+python-dotenv>=1.0.0
+
+# Deep Learning (inference only)
+torch>=2.1.0
+torchvision>=0.16.0
+
+# Image Processing
+pillow>=10.0.0
+
+# Data & Utilities
+numpy>=1.24.0
+pydantic>=2.5.0
+
+# Logging & Monitoring
+logging>=0.4.9.6
+
+# Testing (can be in dev requirements, but often included)
+pytest>=7.4.0
