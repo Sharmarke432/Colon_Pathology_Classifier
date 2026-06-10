@@ -3,7 +3,8 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import models
 from pathlib import Path
-import json, time
+import json
+import time
 
 from src.training.dataset import PathMNISTDataset
 from src.training.transforms import train_transform, val_transform
@@ -23,8 +24,16 @@ MODELS_DIR.mkdir(exist_ok=True)
 train_ds = PathMNISTDataset(NPZ_PATH, "train", transform=train_transform)
 val_ds   = PathMNISTDataset(NPZ_PATH, "val",   transform=val_transform)
 
-train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True,  num_workers=2)
-val_loader   = DataLoader(val_ds,   batch_size=BATCH_SIZE, shuffle=False, num_workers=2)
+train_loader = DataLoader(train_ds, 
+                          batch_size=BATCH_SIZE, 
+                          shuffle=True,  
+                          num_workers=2)
+
+val_loader   = DataLoader(val_ds,   
+                          batch_size=BATCH_SIZE, 
+                          shuffle=False, 
+                          num_workers=2)
+
 
 # ── Model ─────────────────────────────────────────────────
 model = models.efficientnet_b0(weights="IMAGENET1K_V1")
@@ -34,6 +43,7 @@ model = model.to(DEVICE)
 optimizer = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=1e-4)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
 criterion = nn.CrossEntropyLoss()
+
 
 # ── Training loop ─────────────────────────────────────────
 def run_epoch(loader, train=True):
@@ -69,8 +79,11 @@ for epoch in range(1, EPOCHS + 1):
           f"train loss {train_loss:.4f} acc {train_acc:.4f} | "
           f"val loss {val_loss:.4f} acc {val_acc:.4f} | {elapsed:.1f}s")
 
-    history.append({"epoch": epoch, "train_loss": train_loss,
-                    "train_acc": train_acc, "val_loss": val_loss, "val_acc": val_acc})
+    history.append({"epoch": epoch, 
+                    "train_loss": train_loss,
+                    "train_acc": train_acc, 
+                    "val_loss": val_loss, 
+                    "val_acc": val_acc})
 
     if val_acc > best_val_acc:
         best_val_acc = val_acc
