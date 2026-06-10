@@ -10,29 +10,23 @@ from src.training.dataset import PathMNISTDataset
 from src.training.transforms import train_transform, val_transform
 
 # ── Config ────────────────────────────────────────────────
-NPZ_PATH    = "data/raw/pathmnist.npz"
-MODELS_DIR  = Path("models")
+NPZ_PATH = "data/raw/pathmnist.npz"
+MODELS_DIR = Path("models")
 NUM_CLASSES = 9
-BATCH_SIZE  = 64
-EPOCHS      = 15
-LR          = 1e-4
-DEVICE      = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+BATCH_SIZE = 64
+EPOCHS = 15
+LR = 1e-4
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 MODELS_DIR.mkdir(exist_ok=True)
 
 # ── Data ──────────────────────────────────────────────────
 train_ds = PathMNISTDataset(NPZ_PATH, "train", transform=train_transform)
-val_ds   = PathMNISTDataset(NPZ_PATH, "val",   transform=val_transform)
+val_ds = PathMNISTDataset(NPZ_PATH, "val", transform=val_transform)
 
-train_loader = DataLoader(train_ds, 
-                          batch_size=BATCH_SIZE, 
-                          shuffle=True,  
-                          num_workers=2)
+train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 
-val_loader   = DataLoader(val_ds,   
-                          batch_size=BATCH_SIZE, 
-                          shuffle=False, 
-                          num_workers=2)
+val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False, num_workers=2)
 
 
 # ── Model ─────────────────────────────────────────────────
@@ -54,13 +48,13 @@ def run_epoch(loader, train=True):
         for imgs, labels in loader:
             imgs, labels = imgs.to(DEVICE), labels.to(DEVICE)
             preds = model(imgs)
-            loss  = criterion(preds, labels)
+            loss = criterion(preds, labels)
             if train:
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
             total_loss += loss.item() * len(imgs)
-            correct    += (preds.argmax(1) == labels).sum().item()
+            correct += (preds.argmax(1) == labels).sum().item()
     n = len(loader.dataset)
     return total_loss / n, correct / n
 
@@ -71,19 +65,25 @@ history = []
 for epoch in range(1, EPOCHS + 1):
     t0 = time.time()
     train_loss, train_acc = run_epoch(train_loader, train=True)
-    val_loss,   val_acc   = run_epoch(val_loader,   train=False)
+    val_loss, val_acc = run_epoch(val_loader, train=False)
     scheduler.step()
 
     elapsed = time.time() - t0
-    print(f"Epoch {epoch:02d}/{EPOCHS} | "
-          f"train loss {train_loss:.4f} acc {train_acc:.4f} | "
-          f"val loss {val_loss:.4f} acc {val_acc:.4f} | {elapsed:.1f}s")
+    print(
+        f"Epoch {epoch:02d}/{EPOCHS} | "
+        f"train loss {train_loss:.4f} acc {train_acc:.4f} | "
+        f"val loss {val_loss:.4f} acc {val_acc:.4f} | {elapsed:.1f}s"
+    )
 
-    history.append({"epoch": epoch, 
-                    "train_loss": train_loss,
-                    "train_acc": train_acc, 
-                    "val_loss": val_loss, 
-                    "val_acc": val_acc})
+    history.append(
+        {
+            "epoch": epoch,
+            "train_loss": train_loss,
+            "train_acc": train_acc,
+            "val_loss": val_loss,
+            "val_acc": val_acc,
+        }
+    )
 
     if val_acc > best_val_acc:
         best_val_acc = val_acc

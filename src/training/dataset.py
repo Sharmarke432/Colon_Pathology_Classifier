@@ -6,7 +6,7 @@ from PIL import Image
 class PathMNISTDataset(Dataset):
     def __init__(self, npz_path: str, split: str, transform=None):
         data = np.load(npz_path)
-        self.images = data[f"{split}_images"]   # (N, 28, 28, 3) uint8
+        self.images = data[f"{split}_images"]  # (N, 28, 28, 3) uint8
         self.labels = data[f"{split}_labels"].squeeze()  # (N,)
         self.transform = transform
 
