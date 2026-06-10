@@ -1,0 +1,21 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace       # removes trailing spaces
+      - id: end-of-file-fixer         # ensures newline at end of file
+      - id: check-yaml                # validates yaml files
+      - id: check-merge-conflict      # catches leftover merge conflict markers
+      - id: debug-statements          # catches forgotten breakpoint() / pdb calls
