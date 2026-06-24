@@ -14,7 +14,7 @@ from typing import Literal
 
 import torch
 
-from .constants import (
+from src.training.constants import (
     DATASET_NAME,
     DEFAULT_BATCH_SIZE,
     DEFAULT_LEARNING_RATE,

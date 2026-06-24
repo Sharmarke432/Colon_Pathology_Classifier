@@ -13,11 +13,13 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
-from models import create_model
+from src.models import create_model
 from src.core.config import get_default_config
-from .constants import NUM_CLASSES
-from .dataset import create_train_val_datasets  # You will implement this in dataset.py.
-from .transforms import (
+from src.training.constants import NUM_CLASSES
+from src.training.dataset import (
+    create_train_val_datasets,
+)  # You will implement this in dataset.py.
+from src.training.transforms import (
     get_train_transforms,
     get_val_transforms,
 )  # You will implement these in transforms.py.
