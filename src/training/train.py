@@ -20,11 +20,8 @@ from src.training.dataset import (
     create_train_val_datasets,
 )
 from src.training.transforms import get_train_transform, get_val_transform
-from .train import Trainer
+from .trainer import Trainer
 from .utils import set_random_seed
-
-train_transform = get_train_transform()
-val_transform = get_val_transform()
 
 
 def main() -> None:

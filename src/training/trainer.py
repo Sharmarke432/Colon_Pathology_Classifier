@@ -17,6 +17,8 @@ from .metrics import accuracy
 from .utils import save_checkpoint
 from src.core.config import TrainingConfig, get_torch_device
 
+# ^^^ adjust this import to where your TrainingConfig actually lives
+
 
 class Trainer:
     """
@@ -76,7 +78,7 @@ class Trainer:
 
         This method iterates over epochs, runs a training epoch followed
         by a validation epoch, and saves a checkpoint whenever the
-        validation accuracy improves.[web:105][web:104]
+        validation accuracy improves.
         """
         for epoch in range(self.config.num_epochs):
             train_loss, train_acc = self._run_epoch(
@@ -146,10 +148,17 @@ class Trainer:
 
         with context():
             for inputs, targets in data_loader:
+                # Move inputs to the configured device.
                 inputs = inputs.to(self.device)
-                targets = targets.to(self.device)
+
+                # Ensure targets have shape (batch_size,) and dtype long.
+                # This handles MedMNIST labels that come in as (B, 1) or
+                # with extra dimensions, which would otherwise break
+                # CrossEntropyLoss.
+                targets = targets.view(-1).to(self.device, dtype=torch.long)
 
                 if training:
+                    # Reset gradients before each optimization step.
                     self.optimizer.zero_grad()
 
                 # Forward pass.
