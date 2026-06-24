@@ -18,13 +18,13 @@ from src.core.config import get_default_config
 from src.training.constants import NUM_CLASSES
 from src.training.dataset import (
     create_train_val_datasets,
-)  # You will implement this in dataset.py.
-from src.training.transforms import (
-    get_train_transforms,
-    get_val_transforms,
-)  # You will implement these in transforms.py.
+)
+from src.training.transforms import get_train_transform, get_val_transform
 from .train import Trainer
 from .utils import set_random_seed
+
+train_transform = get_train_transform()
+val_transform = get_val_transform()
 
 
 def main() -> None:
@@ -51,8 +51,8 @@ def main() -> None:
     set_random_seed(config.seed)
 
     # Instantiate train and validation transforms.
-    train_transforms = get_train_transforms()
-    val_transforms = get_val_transforms()
+    train_transforms = get_train_transform()
+    val_transforms = get_val_transform()
 
     # Build the training and validation datasets using helper functions.
     train_dataset, val_dataset = create_train_val_datasets(

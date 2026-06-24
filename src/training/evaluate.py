@@ -16,8 +16,8 @@ from src.core.config import get_default_config, get_torch_device
 from .constants import NUM_CLASSES
 from .dataset import create_test_dataset  # To be implemented in dataset.py.
 from .metrics import accuracy
-from .transforms import get_test_transforms  # To be implemented in transforms.py.
 from .utils import load_checkpoint
+from .transforms import get_test_transform
 
 
 def main() -> None:
@@ -37,10 +37,10 @@ def main() -> None:
     device = get_torch_device(config)
 
     # Create the test transforms and dataset.
-    test_transforms = get_test_transforms()
+    test_transform = get_test_transform()
     test_dataset = create_test_dataset(
         data_dir=config.data_dir,
-        transforms=test_transforms,
+        transforms=test_transform,
     )
 
     # Wrap the test dataset in a data loader.
