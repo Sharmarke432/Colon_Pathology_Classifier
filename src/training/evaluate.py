@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from models import create_model
-from .config import get_default_config, get_torch_device
+from src.core.config import get_default_config, get_torch_device
 from .constants import NUM_CLASSES
 from .dataset import create_test_dataset  # To be implemented in dataset.py.
 from .metrics import accuracy

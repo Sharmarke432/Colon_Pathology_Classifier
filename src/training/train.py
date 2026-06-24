@@ -14,14 +14,14 @@ from torch import nn
 from torch.utils.data import DataLoader
 
 from models import create_model
-from .config import get_default_config
+from src.core.config import get_default_config
 from .constants import NUM_CLASSES
 from .dataset import create_train_val_datasets  # You will implement this in dataset.py.
 from .transforms import (
     get_train_transforms,
     get_val_transforms,
 )  # You will implement these in transforms.py.
-from .trainer import Trainer
+from .train import Trainer
 from .utils import set_random_seed
 
 
