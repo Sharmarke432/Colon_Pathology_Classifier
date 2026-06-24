@@ -81,6 +81,7 @@ class Trainer:
         validation accuracy improves.
         """
         for epoch in range(self.config.num_epochs):
+            self.current_epoch = epoch  # for logging
             train_loss, train_acc = self._run_epoch(
                 data_loader=self.train_loader,
                 training=True,
@@ -108,6 +109,12 @@ class Trainer:
                     path=self.config.checkpoint_path(),
                     extra_state=extra_state,
                 )
+
+            print(
+                f"Epoch {epoch+1}/{self.config.num_epochs} "
+                f"train_loss={train_loss:.4f} train_acc={train_acc:.3f} "
+                f"val_loss={val_loss:.4f} val_acc={val_acc:.3f}"
+            )
 
     def _run_epoch(
         self,
@@ -175,6 +182,14 @@ class Trainer:
                 # Compute accuracy for this batch.
                 batch_acc = accuracy(logits=logits, targets=targets)
 
+                log_every = 10  # print every 10 batches
+
+                if training and (num_batches % log_every == 0):
+                    print(
+                        f"[epoch={self.current_epoch} "
+                        f"batch={num_batches}] "
+                        f"loss={loss.item():.4f} acc={batch_acc:.3f}"
+                    )
                 total_loss += loss.item()
                 total_acc += batch_acc
                 num_batches += 1
