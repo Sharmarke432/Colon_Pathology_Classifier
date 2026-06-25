@@ -11,10 +11,10 @@ from pathlib import Path
 import torch
 from torch.utils.data import DataLoader
 
-from models import create_model
+from src.models import create_model
 from src.core.config import get_default_config, get_torch_device
 from .constants import NUM_CLASSES
-from .dataset import create_test_dataset  # To be implemented in dataset.py.
+from .dataset import create_test_dataset
 from .metrics import accuracy
 from .utils import load_checkpoint
 from .transforms import get_test_transform
@@ -74,7 +74,9 @@ def main() -> None:
     with torch.no_grad():
         for inputs, targets in test_loader:
             inputs = inputs.to(device)
-            targets = targets.to(device)
+
+            # Ensure targets have the same shape/dtype as in training.
+            targets = targets.view(-1).to(device, dtype=torch.long)
 
             # Forward pass to obtain logits.
             logits = model(inputs)
