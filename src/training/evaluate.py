@@ -7,14 +7,12 @@ training and computes metrics such as accuracy on the test set.
 """
 
 from pathlib import Path
-from typing import cast
 
 import torch
 from torch.utils.data import DataLoader
 
 from src.models import create_model
 from src.core.config import get_default_config, get_torch_device
-from src.models.model_factory import BackboneName
 from .constants import NUM_CLASSES
 from .dataset import create_test_dataset
 from .metrics import accuracy
@@ -36,9 +34,7 @@ def main() -> None:
     output_dir = Path("artifacts")
 
     # Recreate the configuration used during training.
-    raw_model_name = os.getenv("MODEL_NAME", "resnet18")
-    model_name = cast(BackboneName, raw_model_name)
-
+    model_name = os.getenv("MODEL_NAME", "resnet18")
     config = get_default_config(
         data_dir=data_dir, output_dir=output_dir, model_name=model_name
     )

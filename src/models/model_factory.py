@@ -102,7 +102,7 @@ def _replace_resnet_classifier(
 
 
 def create_model(
-    backbone_name: BackboneName,
+    backbone_name: str = "resnet18",
     num_classes: int = 9,
     pretrained: bool = False,
     dropout_p: float = 0.0,

@@ -7,7 +7,6 @@ configures the optimizer and loss function, and then invokes the trainer
 to run the training loop.
 """
 
-from ctypes import cast
 import os
 from pathlib import Path
 
@@ -17,7 +16,6 @@ from torch.utils.data import DataLoader
 
 from src.models import create_model
 from src.core.config import get_default_config
-from src.models.model_factory import BackboneName
 from src.training.constants import NUM_CLASSES
 from src.training.dataset import (
     create_train_val_datasets,
@@ -45,8 +43,7 @@ def main() -> None:
     output_dir = Path("artifacts")  # Directory for checkpoints and logs.
 
     # default to baseline model resnet18, but allow override via environment variable
-    raw_model_name = os.getenv("MODEL_NAME", "resnet18")
-    model_name = cast(BackboneName, raw_model_name)
+    model_name = os.getenv("MODEL_NAME", "resnet18")
 
     # Construct a default training configuration object.
     config = get_default_config(

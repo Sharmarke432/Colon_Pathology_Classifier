@@ -14,7 +14,6 @@ from typing import Literal
 
 import torch
 
-from src.models.model_factory import BackboneName
 from src.training.constants import (
     DATASET_NAME,
     DEFAULT_BATCH_SIZE,
@@ -64,7 +63,7 @@ class TrainingConfig:
     seed: int = 42  # Random seed used for reproducibility.[web:16]
     checkpoint_name: str = "best_model.pt"  # Filename for the best model checkpoint.
 
-    model_name: BackboneName = "resnet18"
+    model_name: str = "resnet18"
 
     def checkpoint_path(self) -> Path:
         """
@@ -80,7 +79,7 @@ class TrainingConfig:
 
 
 def get_default_config(
-    data_dir: Path, output_dir: Path, model_name: BackboneName = "resnet18"
+    data_dir: Path, output_dir: Path, model_name: str = "resnet18"
 ) -> TrainingConfig:
     """
     Construct a default `TrainingConfig` for CPU-only training.
