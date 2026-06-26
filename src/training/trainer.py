@@ -17,7 +17,7 @@ from .metrics import accuracy
 from .utils import save_checkpoint
 from src.core.config import TrainingConfig, get_torch_device
 
-# ^^^ adjust this import to where your TrainingConfig actually lives
+import csv
 
 
 class Trainer:
@@ -72,6 +72,9 @@ class Trainer:
         # Track the best validation accuracy observed so far.
         self.best_val_accuracy: float = 0.0
 
+        # List that saves the accuracy per epoch for logging purposes.
+        self.history: list[dict[str, float]] = []
+
     def train(self) -> None:
         """
         Run the full training loop.
@@ -90,6 +93,18 @@ class Trainer:
             val_loss, val_acc = self._run_epoch(
                 data_loader=self.val_loader,
                 training=False,
+            )
+
+            # save loss of current epoch to history for logging purposes
+            self.history.append(
+                {
+                    "epoch": epoch,
+                    "train_loss": train_loss,
+                    "train_acc": train_acc,
+                    "val_loss": val_loss,
+                    "val_acc": val_acc,
+                    "best_val_acc": self.best_val_accuracy,
+                }
             )
 
             # If validation accuracy improved, save a new checkpoint.
@@ -115,6 +130,24 @@ class Trainer:
                 f"train_loss={train_loss:.4f} train_acc={train_acc:.3f} "
                 f"val_loss={val_loss:.4f} val_acc={val_acc:.3f}"
             )
+
+        # save logs to disk after training is complete.
+        # This allows for later analysis of the training process.
+        log_path = self.config.output_dir / "metrics_resnet18_baseline.csv"
+        with log_path.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(
+                f,
+                fieldnames=[
+                    "epoch",
+                    "train_loss",
+                    "train_acc",
+                    "val_loss",
+                    "val_acc",
+                    "best_val_acc",
+                ],
+            )
+        writer.writeheader()
+        writer.writerows(self.history)
 
     def _run_epoch(
         self,
