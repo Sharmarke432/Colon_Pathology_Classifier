@@ -18,6 +18,7 @@ from .dataset import create_test_dataset
 from .metrics import accuracy
 from .utils import load_checkpoint
 from .transforms import get_test_transform
+import os
 
 
 def main() -> None:
@@ -33,7 +34,10 @@ def main() -> None:
     output_dir = Path("artifacts")
 
     # Recreate the configuration used during training.
-    config = get_default_config(data_dir=data_dir, output_dir=output_dir)
+    model_name = os.getenv("MODEL_NAME", "resnet18")
+    config = get_default_config(
+        data_dir=data_dir, output_dir=output_dir, model_name=model_name
+    )
     device = get_torch_device(config)
 
     # Create the test transforms and dataset.
@@ -53,7 +57,7 @@ def main() -> None:
 
     # Reconstruct the model architecture.
     model = create_model(
-        backbone_name="resnet18",
+        backbone_name=config.model_name,
         num_classes=NUM_CLASSES,
         pretrained=False,
         dropout_p=0.0,
