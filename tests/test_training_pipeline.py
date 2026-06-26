@@ -5,6 +5,7 @@ These tests run a very small training loop on synthetic data to confirm
 that the Trainer integrates correctly with the model and optimizer.
 """
 
+import os
 from pathlib import Path
 
 import torch
@@ -41,6 +42,7 @@ def test_trainer_runs_single_epoch(tmp_path: Path) -> None:
     val_loader = DataLoader(dataset, batch_size=8, shuffle=False)
 
     # Create a lightweight configuration pointing to the temporary directory.
+    model_name = os.getenv("MODEL_NAME", "resnet18")
     config = TrainingConfig(
         data_dir=Path("data"),
         output_dir=tmp_path,
@@ -50,13 +52,15 @@ def test_trainer_runs_single_epoch(tmp_path: Path) -> None:
         num_epochs=1,
         learning_rate=1e-3,
         device="cpu",
+        seed=0,
+        model_name=model_name,
     )
 
     device = get_torch_device(config)
 
     # Build the model, loss function, and optimizer.
     model = create_model(
-        backbone_name="resnet18",
+        backbone_name=model_name,
         num_classes=NUM_CLASSES,
         pretrained=False,
         dropout_p=0.0,
@@ -75,7 +79,15 @@ def test_trainer_runs_single_epoch(tmp_path: Path) -> None:
         config=config,
     )
 
-    trainer.train()
+    # Run the training loop; should not raise and should return finite metrics.
+    train_loss, train_acc = trainer._run_epoch(train_loader, training=True)
+    val_loss, val_acc = trainer._run_epoch(val_loader, training=False)
 
-    # Confirm that a checkpoint file was created.
-    assert config.checkpoint_path().exists()
+    for value in (train_loss, train_acc, val_loss, val_acc):
+        assert isinstance(value, float)
+        assert value == value  # not NaN
+
+    # Confirm that a checkpoint file was created and is non-empty.
+    checkpoint_path = config.checkpoint_path()
+    assert checkpoint_path.exists()
+    assert checkpoint_path.stat().st_size > 0

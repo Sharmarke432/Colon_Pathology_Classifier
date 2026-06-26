@@ -2,7 +2,8 @@
 Simple tests for the model factory and classifier.
 
 These tests validate that the model can be instantiated and run on
-dummy inputs without raising errors.
+dummy inputs without raising errors, and that the output logits have
+the expected shape and dtype.
 """
 
 import torch
@@ -38,3 +39,7 @@ def test_create_model_forward_pass() -> None:
 
     # Check that the number of output units matches the class count.
     assert logits.shape[1] == NUM_CLASSES
+
+    # Check type/dtype invariants.
+    assert isinstance(logits, torch.Tensor)
+    assert logits.dtype == torch.float32
