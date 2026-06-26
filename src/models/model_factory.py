@@ -22,7 +22,7 @@ BackboneName = Literal[
 
 
 def create_backbone(
-    name: BackboneName,
+    name: str,
     pretrained: bool = False,
 ) -> nn.Module:
     """
