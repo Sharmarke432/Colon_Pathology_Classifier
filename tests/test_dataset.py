@@ -36,6 +36,9 @@ def test_pathmnist_wrapper_single_sample_shapes_and_types(tmp_path: Path) -> Non
     scalar long label in [0, NUM_CLASSES).
     """
     data_dir = tmp_path / "data"
+    data_dir.mkdir(
+        parents=True, exist_ok=True
+    )  # Ensure the directory exists for download.
 
     dataset = PathMNISTWrapper(
         split="train",
@@ -65,6 +68,7 @@ def test_train_val_datasets_batch_shapes(tmp_path: Path) -> None:
     images: (B, 3, H, W), labels: (B,) with long dtype.
     """
     data_dir = tmp_path / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)  # NEW
 
     train_tf = get_train_transform()
     val_tf = get_val_transform()
@@ -97,6 +101,7 @@ def test_test_dataset_compatible_with_val(tmp_path: Path) -> None:
     the validation dataset, so it can plug into the same evaluation code.
     """
     data_dir = tmp_path / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)  # NEW
 
     val_tf = get_val_transform()
     test_tf = get_test_transform()

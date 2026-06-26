@@ -75,6 +75,8 @@ class Trainer:
         # List that saves the accuracy per epoch for logging purposes.
         self.history: list[dict[str, float]] = []
 
+        self.current_epoch = 0  # default so tests can use it safely
+
     def train(self) -> None:
         """
         Run the full training loop.
