@@ -9,5 +9,8 @@ mypy>=1.8.0
 pytest-cov>=4.1.0
 pre-commit>=3.6.0
 
-# Optional: Jupyter for debugging (if you want to inspect model)
+# Optional: Jupyter for debugging (if I want to inspect model)
 jupyter>=1.0.0
+
+#Needed for testing
+medmnist
