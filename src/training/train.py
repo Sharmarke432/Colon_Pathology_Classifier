@@ -7,6 +7,7 @@ configures the optimizer and loss function, and then invokes the trainer
 to run the training loop.
 """
 
+import os
 from pathlib import Path
 
 import torch
@@ -41,8 +42,13 @@ def main() -> None:
     )  # Directory where MedMNIST / PathMNIST files reside.[web:10]
     output_dir = Path("artifacts")  # Directory for checkpoints and logs.
 
+    # default to baseline model resnet18, but allow override via environment variable
+    model_name = os.getenv("MODEL_NAME", "resnet18")
+
     # Construct a default training configuration object.
-    config = get_default_config(data_dir=data_dir, output_dir=output_dir)
+    config = get_default_config(
+        data_dir=data_dir, output_dir=output_dir, model_name=model_name
+    )
 
     # Apply the random seed to improve reproducibility across runs.
     set_random_seed(config.seed)
@@ -75,7 +81,7 @@ def main() -> None:
 
     # Construct the classification model using the model factory.
     model = create_model(
-        backbone_name="resnet18",
+        backbone_name=config.model_name,
         num_classes=NUM_CLASSES,
         pretrained=False,
         dropout_p=0.0,

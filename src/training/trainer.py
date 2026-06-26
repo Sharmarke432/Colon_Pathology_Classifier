@@ -133,7 +133,7 @@ class Trainer:
 
         # save logs to disk after training is complete.
         # This allows for later analysis of the training process.
-        log_path = self.config.output_dir / "metrics_resnet18_baseline.csv"
+        log_path = self.config.output_dir / f"metrics_{self.config.model_name}.csv"
         with log_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f,
@@ -146,8 +146,22 @@ class Trainer:
                     "best_val_acc",
                 ],
             )
-        writer.writeheader()
-        writer.writerows(self.history)
+            writer.writeheader()
+            writer.writerows(self.history)
+
+        # save model
+        final_model_path = (
+            self.config.output_dir / f"{self.config.model_name}_baseline.pt"
+        )
+        final_extra_state = {
+            "best_val_accuracy": self.best_val_accuracy,
+            "num_epochs": self.config.num_epochs,
+        }
+        save_checkpoint(
+            model=self.model,
+            path=final_model_path,
+            extra_state=final_extra_state,
+        )
 
     def _run_epoch(
         self,

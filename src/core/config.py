@@ -63,6 +63,8 @@ class TrainingConfig:
     seed: int = 42  # Random seed used for reproducibility.[web:16]
     checkpoint_name: str = "best_model.pt"  # Filename for the best model checkpoint.
 
+    model_name: str = "resnet18"
+
     def checkpoint_path(self) -> Path:
         """
         Compute the full path to the checkpoint file.
@@ -77,8 +79,7 @@ class TrainingConfig:
 
 
 def get_default_config(
-    data_dir: Path,
-    output_dir: Path,
+    data_dir: Path, output_dir: Path, model_name: str = "resnet18"
 ) -> TrainingConfig:
     """
     Construct a default `TrainingConfig` for CPU-only training.
@@ -109,6 +110,7 @@ def get_default_config(
         data_dir=data_dir,
         output_dir=output_dir,
         device=device,
+        model_name=model_name,
     )
 
     return config
