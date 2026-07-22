@@ -4,7 +4,6 @@ Inference service for loading the trained model and running predictions.
 
 import os
 from pathlib import Path
-from typing import cast
 
 import torch
 
@@ -36,19 +35,28 @@ class InferenceService:
 
     def __init__(self) -> None:
         self.model_name = os.getenv("MODEL_NAME", "resnet18")
-        self.data_dir = Path("data")
-        self.output_dir = Path("artifacts")
 
-        self.config = get_default_config(
-            data_dir=self.data_dir,
-            output_dir=self.output_dir,
-            model_name=cast(str, self.model_name),
-        )
-        self.device = get_torch_device(self.config)
-        self.checkpoint_path = self.config.checkpoint_path()
+        model_path_env = os.getenv("MODEL_PATH")
+
+        if model_path_env is not None:
+            self.checkpoint_path = Path(model_path_env)
+            # you can still build a minimal config for device, etc.
+            config = get_default_config(data_dir=Path("."), output_dir=Path("."))
+        else:
+            # fallback to old behavior for local dev
+            data_dir = Path("data")
+            output_dir = Path("artifacts")
+            config = get_default_config(
+                data_dir=data_dir,
+                output_dir=output_dir,
+                model_name=self.model_name,
+            )
+            self.checkpoint_path = config.checkpoint_path()
+
+        self.device = get_torch_device(config)
 
         self.model = create_model(
-            backbone_name=self.config.model_name,
+            backbone_name=self.model_name,
             num_classes=NUM_CLASSES,
             pretrained=False,
             dropout_p=0.0,
@@ -57,7 +65,7 @@ class InferenceService:
         if not self.checkpoint_path.exists():
             raise FileNotFoundError(
                 f"Checkpoint not found at '{self.checkpoint_path}'. "
-                "Train the model before starting the API."
+                "Set MODEL_PATH or ensure the checkpoint is available."
             )
 
         load_checkpoint(
