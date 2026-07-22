@@ -24,10 +24,10 @@ htmlcov/
 # Large data & models (copy separately or download in Docker)
 # ---------------
 data/
-models/
-*.pth
-*.pt
-*.h5
+#models/
+#*.pth
+#*.pt
+#*.h5
 
 # ---------------
 # IDE & editor files
