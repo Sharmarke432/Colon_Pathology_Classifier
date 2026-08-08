@@ -23,7 +23,6 @@ from src.training.constants import (
     NUM_CLASSES,
 )
 
-
 DeviceType = Literal["cpu"]  # Restrict the device type to CPU for now.
 
 

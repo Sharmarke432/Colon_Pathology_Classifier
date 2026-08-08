@@ -17,6 +17,8 @@ env/
 
 # ───────── Data & models (local only) ─────────
 data/
+models/
+*.pt
 artifacts/
 *.pth
 *.pt

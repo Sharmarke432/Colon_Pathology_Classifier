@@ -13,7 +13,6 @@ from torchvision import transforms as T
 
 from .constants import IMAGE_HEIGHT, IMAGE_WIDTH
 
-
 # PathMNIST mean/std computed from the training split.
 # Keeping these as module-level constants makes them easy to reuse and
 # also documents the normalization scheme used for the project.[web:4][web:94]
