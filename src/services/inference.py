@@ -14,7 +14,6 @@ from src.core.config import get_default_config, get_torch_device
 from src.training.constants import NUM_CLASSES
 from src.training.utils import load_checkpoint
 
-
 CLASS_LABELS: dict[int, str] = {
     0: "adipose",
     1: "background",
