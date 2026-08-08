@@ -1,11 +1,15 @@
 from io import BytesIO
+import os
 
 from fastapi.testclient import TestClient
 from PIL import Image
+import pytest
 
 from src.api.main import app
 
 client = TestClient(app)
+
+checkpoint_missing = not os.path.exists("artifacts/best_model.pt")
 
 
 def make_test_image() -> BytesIO:
@@ -24,6 +28,7 @@ def test_health():
     assert body.get("status") in {"ok", "healthy"}
 
 
+@pytest.mark.skipif(checkpoint_missing, reason="No trained checkpoint available")
 def test_model_info():
     response = client.get("/model-info")
 
@@ -58,6 +63,7 @@ def test_static_javascript():
     assert "fetch" in response.text
 
 
+@pytest.mark.skipif(checkpoint_missing, reason="No trained checkpoint available")
 def test_predict_valid_image():
     image = make_test_image()
 
