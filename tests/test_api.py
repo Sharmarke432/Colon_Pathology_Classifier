@@ -104,3 +104,27 @@ def test_predict_rejects_invalid_file():
     )
 
     assert response.status_code in {400, 415, 422}
+
+
+def test_root_serves_html(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+    assert "Colon Pathology Patch Classifier" in response.text
+
+
+def test_static_assets_load(client):
+    css_response = client.get("/static/styles.css")
+    js_response = client.get("/static/app.js")
+    assert css_response.status_code == 200
+    assert js_response.status_code == 200
+    assert "text/css" in css_response.headers["content-type"]
+
+
+def test_predict_invalid_bytes(client):
+    response = client.post(
+        "/predict",
+        files={"file": ("not_an_image.txt", b"not image data", "text/plain")},
+    )
+    assert response.status_code in (400, 422)
+    assert "detail" in response.json()

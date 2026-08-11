@@ -74,6 +74,26 @@ class InferenceService:
         )
         self.model.eval()
 
+    def _validate_checkpoint(self):
+        checkpoint_path = Path(self.model_path)
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(
+                f"Checkpoint not found at '{self.model_path}'. "
+                "Set MODEL_PATH or ensure the checkpoint is available."
+            )
+        if checkpoint_path.stat().st_size == 0:
+            raise ValueError(f"Checkpoint at '{self.model_path}' is empty.")
+
+    def _load_checkpoint(self):
+        state_dict = torch.load(self.model_path, map_location="cpu")
+        try:
+            self.model.load_state_dict(state_dict)
+        except RuntimeError as error:
+            raise RuntimeError(
+                f"Checkpoint at '{self.model_path}' is incompatible with model "
+                f"'{self.model_name}': {error}"
+            ) from error
+
     def predict_from_bytes(
         self,
         image_bytes: bytes,

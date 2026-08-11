@@ -7,6 +7,10 @@ from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from src.schemas.prediction import PredictionResponse
 from src.services.inference import get_inference_service
 
+from PIL import Image, UnidentifiedImageError
+import io
+
+
 router = APIRouter(tags=["predict"])
 
 
@@ -31,6 +35,15 @@ async def predict(file: UploadFile = File(...)) -> PredictionResponse:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Uploaded file is empty.",
+        )
+
+    # Optional: validate that it's a real image before calling the service
+    try:
+        image = Image.open(io.BytesIO(image_bytes))
+        image.verify()
+    except UnidentifiedImageError:
+        raise HTTPException(
+            status_code=400, detail="Uploaded file is not a valid image."
         )
 
     service = get_inference_service()
