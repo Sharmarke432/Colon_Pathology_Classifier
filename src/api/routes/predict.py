@@ -2,10 +2,14 @@
 Prediction routes.
 """
 
+from certifi import contents
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 
 from src.schemas.prediction import PredictionResponse
 from src.services.inference import get_inference_service
+
+from PIL import Image, UnidentifiedImageError
+import io
 
 router = APIRouter(tags=["predict"])
 
@@ -45,5 +49,13 @@ async def predict(file: UploadFile = File(...)) -> PredictionResponse:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
         ) from exc
+
+    try:
+        image = Image.open(io.BytesIO(contents))
+        image.verify()
+    except UnidentifiedImageError:
+        raise HTTPException(
+            status_code=400, detail="Uploaded file is not a valid image."
+        )
 
     return result
