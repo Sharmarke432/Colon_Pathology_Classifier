@@ -21,3 +21,4 @@ logging>=0.4.9.6
 # Testing (can be in dev requirements, but often included)
 pytest>=7.4.0
 certifi
+huggingface_hub>=0.30,<1.0

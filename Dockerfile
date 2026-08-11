@@ -1,9 +1,12 @@
 FROM python:3.11-slim
 
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+
 WORKDIR /app
+
 
 # System deps for Pillow / OpenCV-style image ops
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -14,24 +17,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
+
 # Install Python deps
 COPY requirements.txt .
+
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
         torch torchvision torchaudio && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy model artifact
-COPY models/pathmnist_resnet18.pt /models/pathmnist_resnet18.pt
+
+# Copy code (but NOT the model checkpoint)
+COPY src ./src
+COPY scripts ./scripts
+
+
+# Create models directory and download the checkpoint at build time
+RUN mkdir -p /app/models
+RUN python scripts/download_model.py
+
 
 ENV MODEL_NAME=resnet18
-ENV MODEL_PATH=/models/pathmnist_resnet18.pt
+ENV MODEL_PATH=/app/models/pathmnist_resnet18.pt
 
-# Copy rest of the project
+
+# Copy remaining project files (tests, etc.) if needed
 COPY . .
 
+
 EXPOSE 8000
+
 
 # Start FastAPI with Uvicorn
 CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
