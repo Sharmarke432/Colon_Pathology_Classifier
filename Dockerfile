@@ -32,6 +32,15 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY src ./src
 COPY scripts ./scripts
 
+# Build args
+ARG HF_TOKEN
+ARG HF_MODEL_REPO
+ARG HF_MODEL_FILENAME
+
+# Set as env for the download step
+ENV HF_TOKEN=${HF_TOKEN}
+ENV HF_MODEL_REPO=${HF_MODEL_REPO}
+ENV HF_MODEL_FILENAME=${HF_MODEL_FILENAME}
 
 # Create models directory and download the checkpoint at build time
 RUN mkdir -p /app/models
